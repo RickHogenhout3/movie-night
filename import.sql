@@ -1,0 +1,5 @@
+DROP DATABASE IF EXISTS `movies`;
+
+CREATE DATABASE IF NOT EXISTS `movies`;
+
+USE `movies`;
