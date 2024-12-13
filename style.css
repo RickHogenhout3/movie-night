@@ -1,3 +1,5 @@
+/* Header CSS */
+
 * {
     margin: 0;
     padding: 0;
@@ -52,7 +54,6 @@ header {
     border-radius: 5px;
 }
 
-/* Dropdown Menu */
 .nav-links .dropdown {
     position: relative;
 }
@@ -86,4 +87,72 @@ header {
 /* Show dropdown on hover */
 .nav-links .dropdown:hover .dropdown-content {
     display: flex;
+}
+
+.search-bar {
+    display: flex;
+    align-items: center;
+}
+
+.search-bar input {
+    padding: 5px;
+    width: 600px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px 0 0 5px;
+    outline: none;
+}
+
+.search-bar button {
+    padding: 6.5px 10px;
+    font-size: 16px;
+    background-color: #24678d;
+    border: none;
+    border-radius: 0 5px 5px 0;
+    color: #fff;
+    cursor: pointer;
+}
+
+.search-bar button:hover {
+    background-color: #144460;
+}
+
+/* Index CSS */
+
+.movie-container {
+    margin: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+.movie-card {
+    margin: 10px;
+    padding: 15px;
+    width: 300px;
+    text-align: center;
+    background: #f8f9fa;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+.movie-poster {
+    width: 100%;
+    border-radius: 8px;
+}
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+}
+.pagination button {
+    margin: 0 5px;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+}
+.pagination button:disabled {
+    background-color: #ddd;
+    cursor: not-allowed;
 }
