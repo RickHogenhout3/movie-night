@@ -20,6 +20,7 @@
                 <div class="dropdown-content">
                     <a href="#">Watchlist</a>
                     <a href="#">Your Movie Rankings</a>
+                    <a href="logout.php">log out</a>
                 </div>
             </li>
         </ul>
