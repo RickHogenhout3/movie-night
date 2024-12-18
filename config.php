@@ -1,5 +1,4 @@
 <?php
-session_start();
 $host = "localhost";
 $username = "bit_academy";
 $password = "";
@@ -10,15 +9,15 @@ $charset = "utf8mb4";
 $apiKey = '0a489ed528533b2350c3cae9ea4419d9';
 $apiUrl = 'https://api.themoviedb.org/3/discover/movie';
 
-// Function to connect to the database
-function connectDatabase($host, $dbname, $username, $password) {
-    $conn = new mysqli($host, $username, $password, $dbname);
-
-    if ($conn->connect_error) {
-        die("Connection failed: " . $conn->connect_error);
-    }
-
-    return $conn;
+try {
+    // PDO Connection
+    $dsn = "mysql:host=$host;dbname=$dbname;charset=$charset";
+    $conn = new PDO($dsn, $username, $password, [
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+    ]);
+} catch (PDOException $e) {
+    die("Database connection failed: " . $e->getMessage());
 }
 
 // Function to fetch movies from the API
@@ -26,7 +25,7 @@ function fetchMoviesFromAPI($page = 1, $apiKey, $apiUrl) {
     $url = "$apiUrl?api_key=$apiKey&page=$page";
     $response = file_get_contents($url);
 
-    if ($response === FALSE) {
+    if ($response === false) {
         die("Error fetching data from API.");
     }
 
@@ -37,7 +36,7 @@ function fetchMoviesFromAPI($page = 1, $apiKey, $apiUrl) {
 function storeMoviesInDatabase($movies, $conn) {
     $stmt = $conn->prepare("
         INSERT INTO movies (id, title, release_date, poster_url, overview) 
-        VALUES (?, ?, ?, ?, ?)
+        VALUES (:id, :title, :release_date, :poster_url, :overview)
         ON DUPLICATE KEY UPDATE 
             title = VALUES(title), 
             release_date = VALUES(release_date), 
@@ -46,31 +45,20 @@ function storeMoviesInDatabase($movies, $conn) {
     ");
 
     foreach ($movies as $movie) {
-        $id = $movie['id'];
-        $title = $movie['title'];
-        $releaseDate = $movie['release_date'];
-        $posterUrl = $movie['poster_path'];
-        $overview = $movie['overview'];
-
-        $stmt->bind_param("issss", $id, $title, $releaseDate, $posterUrl, $overview);
-
-        if (!$stmt->execute()) {
-            echo "Error storing movie: " . $stmt->error . "<br>";
-        }
+        $stmt->execute([
+            ':id' => $movie['id'],
+            ':title' => $movie['title'],
+            ':release_date' => $movie['release_date'],
+            ':poster_url' => $movie['poster_path'],
+            ':overview' => $movie['overview'],
+        ]);
     }
-
-    $stmt->close();
 }
 
-function syncMovies($host, $dbname, $username, $password, $apiKey, $apiUrl, $pages = 1) {
-    $conn = connectDatabase($host, $dbname, $username, $password);
-
+// Sync movies from API to database
+function syncMovies($conn, $apiKey, $apiUrl, $pages = 1) {
     for ($page = 1; $page <= $pages; $page++) {
         $movies = fetchMoviesFromAPI($page, $apiKey, $apiUrl);
         storeMoviesInDatabase($movies, $conn);
     }
-
-    $conn->close();
 }
-
-syncMovies($host, $dbname, $username, $password, $apiKey, $apiUrl);

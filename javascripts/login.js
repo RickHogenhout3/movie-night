@@ -1,9 +1,3 @@
-// Simulate user login state (Replace this with actual authentication logic)
-let isLoggedIn = false; // Change to true if user is logged in
-
-// DOM element for the user account section
-const userAccount = document.getElementById('user-account');
-
 function renderUserAccount() {
     if (isLoggedIn) {
         userAccount.innerHTML = `

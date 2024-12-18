@@ -18,8 +18,8 @@ function test_input($data) {
 if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
     try {
         // Update the status to "inactive" for the logged-in user when logging out
-        $stmt = $connect->prepare("UPDATE user SET status = 'inactive' WHERE unique_id = ?");
-        $stmt->execute([$_SESSION['unique_id']]);
+        $stmt = $conn->prepare("UPDATE user SET status = 'inactive' WHERE id = ?");
+        $stmt->execute([$_SESSION['id']]);
     } catch (PDOException $e) {
         // Handle the error as needed
         echo "Error updating status: " . $e->getMessage();
